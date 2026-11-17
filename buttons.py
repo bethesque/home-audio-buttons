@@ -9,6 +9,7 @@ Buttons POST to BUTTON_1_URL, BUTTON_2_URL, BUTTON_3_URL if those are set.
 Usage (same options as keypad.py):
   source .env && python buttons.py
   python buttons.py --device "keypad name"    # Pi
+  KEYPAD_DEVICE="keypad name" python buttons.py   # Pi, same as --device
 """
 
 import os
@@ -142,6 +143,10 @@ def main():
         print(f"Controlling {ha.entity} via {ha.url}")
         for n, url in BUTTON_URLS.items():
             print(f"Button {n} -> POST {url}")
+    # Default --device from KEYPAD_DEVICE (e.g. when run as a service).
+    device = os.environ.get("KEYPAD_DEVICE")
+    if device and not any(a == "--device" or a.startswith("--device=") for a in sys.argv[1:]):
+        sys.argv += ["--device", device]
     keypad.main()
 
 
