@@ -1,0 +1,23 @@
+# systemd unit for sayo-button.py
+#
+# Logs:   journalctl -u sayo-button -f
+
+[Unit]
+Description=Sayo Button
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=pi
+# Needed to read /dev/input/event* via evdev
+SupplementaryGroups=input
+WorkingDirectory=/home/pi/home-audio-buttons
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/home/pi/home-audio-buttons/.env
+ExecStart=/home/pi/home-audio-buttons/.venv/bin/python sayo-button.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
